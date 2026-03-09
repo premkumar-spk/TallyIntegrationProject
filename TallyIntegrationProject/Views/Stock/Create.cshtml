@@ -1,0 +1,99 @@
+﻿@model TallyIntegrationProject.Models.StockItemModel
+
+<style>
+    body {
+        background-color: #f4f6f9;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .page-title {
+        margin-left: 40px;
+        margin-top: 30px;
+        font-weight: 600;
+    }
+
+    .form-container {
+        width: 300px;
+        background: white;
+        padding: 30px;
+        margin: 20px 40px;
+        border-radius: 8px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    input {
+        width: 95%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+    select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    button {
+        background-color: #2f3e4d;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        button:hover {
+            background-color: #1f2b38;
+        }
+
+    .result {
+        margin-left: 40px;
+        margin-top: 10px;
+        color: green;
+    }
+</style>
+
+<h2 class="page-title">Create Stock Item</h2>
+
+<div class="form-container">
+
+    <form method="post">
+
+        <div class="form-group">
+            <label>Item Name</label>
+            <input asp-for="Name" placeholder="Enter Item Name" />
+        </div>
+
+        <div class="form-group">
+            <label>Unit</label>
+
+            <select asp-for="Unit" class="form-control">
+                <option value="">Select Unit</option>
+                <option>Nos</option>
+                <option>Pcs</option>
+                <option>Kg</option>
+                <option>Ltr</option>
+            </select>
+
+        </div>
+
+        <button type="submit">Create Item</button>
+
+    </form>
+
+</div>
+
+<p class="result">@ViewBag.Result</p>

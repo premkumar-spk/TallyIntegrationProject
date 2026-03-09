@@ -1,0 +1,84 @@
+﻿@model List<TallyIntegrationProject.Models.TallyCompany>
+
+<style>
+
+    body {
+        background-color: #f4f6f9;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .page-title {
+        margin: 40px;
+        font-weight: 600;
+    }
+
+    .company-container {
+        width: 600px;
+    }
+
+    .company-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        padding: 18px 20px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: 0.2s;
+    }
+
+        .company-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+        }
+
+    .company-name {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .company-card .open-btn {
+        display: inline-block;
+        text-decoration: none !important;
+        background: #2f3e4d;
+        color: #ffffff !important;
+    }
+
+        .open-btn:hover {
+            background: #1f2b38;
+        }
+
+    .company-icon {
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+    .company-info {
+        display: flex;
+        align-items: center;
+    }
+
+</style>
+
+<h2 class="page-title">Select Company</h2>
+
+<div class="company-container">
+
+    @foreach (var c in Model)
+    {
+        <div class="company-card">
+
+            <div class="company-info">
+                <span class="company-icon">🏢</span>
+                <span class="company-name">@c.Name</span>
+            </div>
+
+            <a class="open-btn" href="/Company/SetCompany?companyName=@c.Name">
+                Open →
+            </a>
+
+        </div>
+    }
+
+</div>
