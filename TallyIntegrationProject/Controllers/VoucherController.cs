@@ -24,7 +24,35 @@ namespace TallyIntegrationProject.Controllers
         {
             XmlGenerator xml = new XmlGenerator();
 
-            var xmlData = xml.CreateSalesVoucherXML(model.CustomerName, model.ItemName, model.Amount);
+            // Null-check the model itself.
+            if (model == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid request.");
+                return View(model);
+            }
+
+            // Validate required string properties to avoid passing null to XmlGenerator.
+            if (string.IsNullOrWhiteSpace(model.CustomerName))
+            {
+                ModelState.AddModelError(nameof(model.CustomerName), "Customer name is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(model.ItemName))
+            {
+                ModelState.AddModelError(nameof(model.ItemName), "Item name is required.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                // Return the view with validation messages so the user can correct input.
+                return View(model);
+            }
+
+            // At this point CustomerName and ItemName are non-null and non-whitespace.
+            var customer = model.CustomerName!;
+            var item = model.ItemName!;
+
+            var xmlData = xml.CreateSalesVoucherXML(customer, item, model.Amount);
 
             var result = await _service.SendToTally(xmlData);
 

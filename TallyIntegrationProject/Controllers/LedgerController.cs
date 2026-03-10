@@ -23,16 +23,47 @@ namespace TallyIntegrationProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(LedgerModel model)
         {
-            XmlGenerator xml = new XmlGenerator();
+            // Copy properties to locals for reliable null-checking
+            var ledgerName = model?.LedgerName;
+            var parent = model?.Parent;
 
-            var xmlData = xml.CreateLedgerXML(model.LedgerName, model.Parent);
+            // Validate required inputs
+            if (string.IsNullOrWhiteSpace(ledgerName))
+            {
+                ModelState.AddModelError(nameof(model.LedgerName), "Ledger name is required.");
+            }
 
-            var result = await _service.SendToTally(xmlData);
+            if (string.IsNullOrWhiteSpace(parent))
+            {
+                ModelState.AddModelError(nameof(model.Parent), "Parent is required.");
+            }
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
 
-            ViewBag.Result = result;
+                XmlGenerator xml = new XmlGenerator();
 
-            return View();
+                // Locals are validated; use null-forgiving operator to satisfy the compiler if necessary
+                var xmlData = xml.CreateLedgerXML(ledgerName!, parent!);
+
+                var result = await _service.SendToTally(xmlData);
+
+                //TempData["Result"] = result;
+                //return RedirectToAction("Create", "Stock");
+
+                if (result.Contains("Created") || result.Contains("success"))
+                {
+                    return RedirectToAction("Create", "Stock", new { ledger = ledgerName });
+                }
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Result = ex.Message;
+            }
+            return View(model);
         }
-
     }
 }

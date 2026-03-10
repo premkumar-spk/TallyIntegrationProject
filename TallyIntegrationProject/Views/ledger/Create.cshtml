@@ -59,11 +59,11 @@
     }
 </style>
 
-<h2 class="page-title">Create Sales Voucher</h2>
+<h2 class="page-title">Create Ledger</h2>
 
 <div class="form-container">
 
-    <form method="post">
+    <form asp-controller="Ledger" asp-action="Create" method="post">
         <div class="form-group">
 
             <label asp-for="LedgerName">Ledger Name</label>
@@ -82,5 +82,7 @@
     </form>
 
 </div>
-
-<p class="result">@ViewBag.Result</p>
+@if (TempData["Result"] != null)
+{
+    <p class="result">@TempData["Result"]</p>
+}

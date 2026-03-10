@@ -1,5 +1,4 @@
 ﻿@model TallyIntegrationProject.Models.StockItemModel
-
 <style>
     body {
         background-color: #f4f6f9;
@@ -70,11 +69,16 @@
 
 <div class="form-container">
 
-    <form method="post">
+    <form asp-controller="Stock" asp-action="Create" method="post">
 
         <div class="form-group">
             <label>Item Name</label>
             <input asp-for="Name" placeholder="Enter Item Name" />
+        </div>
+
+        <div class="form-group">
+            <label>Group</label>
+            <input asp-for="Group" placeholder="Enter Group Name" />
         </div>
 
         <div class="form-group">
@@ -96,4 +100,7 @@
 
 </div>
 
-<p class="result">@ViewBag.Result</p>
+@if (TempData["Result"] != null)
+{
+    <p class="result">@TempData["Result"]</p>
+}

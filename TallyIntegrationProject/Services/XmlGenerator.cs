@@ -1,4 +1,6 @@
-﻿namespace TallyIntegrationProject.Services
+﻿using System.Text.RegularExpressions;
+
+namespace TallyIntegrationProject.Services
 {
     public class XmlGenerator
     {
@@ -18,7 +20,11 @@
    <REQUESTDATA>
     <TALLYMESSAGE>
      <LEDGER NAME=""{ledgerName}"" ACTION=""Create"">
-      <PARENT>{parent}</PARENT>
+        <NAME.LIST>
+                <NAME>{ledgerName}</NAME>
+            </NAME.LIST>
+       <PARENT>{parent}</PARENT>
+        <ISBILLWISEON>Yes</ISBILLWISEON>
      </LEDGER>
     </TALLYMESSAGE>
    </REQUESTDATA>
@@ -28,20 +34,29 @@
         }
 
 
-        public string CreateStockXML(string name, string unit)
+        public string CreateStockXML(string name, string unit, string? group)
         {
             return $@"
 <ENVELOPE>
  <HEADER>
   <TALLYREQUEST>Import Data</TALLYREQUEST>
  </HEADER>
+
  <BODY>
   <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>All Masters</REPORTNAME>
+   </REQUESTDESC>
+
    <REQUESTDATA>
-    <TALLYMESSAGE>
-     <STOCKITEM NAME=""{name}"" ACTION=""Create"">
-      <BASEUNITS>{unit}</BASEUNITS>
+    <TALLYMESSAGE xmlns:UDF='TallyUDF'>
+
+     <STOCKITEM NAME='{name}' ACTION='Create'>
+        <NAME>{name}</NAME>
+        <PARENT>{group}</PARENT>
+        <BASEUNITS>{unit}</BASEUNITS>
      </STOCKITEM>
+
     </TALLYMESSAGE>
    </REQUESTDATA>
   </IMPORTDATA>
