@@ -65,31 +65,62 @@ namespace TallyIntegrationProject.Services
         }
 
 
-        public string CreateSalesVoucherXML(string customer, string item, decimal amount)
+        public string CreateSalesVoucherXML(string customer, string item, decimal amount, DateTime date, string tallyDate)
         {
             return $@"
 <ENVELOPE>
  <HEADER>
   <TALLYREQUEST>Import Data</TALLYREQUEST>
  </HEADER>
+
  <BODY>
   <IMPORTDATA>
+   <REQUESTDESC>
+    <REPORTNAME>Vouchers</REPORTNAME>
+   </REQUESTDESC>
+
    <REQUESTDATA>
-    <TALLYMESSAGE>
-     <VOUCHER VCHTYPE=""Sales"" ACTION=""Create"">
+    <TALLYMESSAGE xmlns:UDF='TallyUDF'>
+
+     <VOUCHER VCHTYPE='Sales' ACTION='Create'>
+
+      <DATE>{tallyDate}</DATE>
+      <EFFECTIVEDATE>{tallyDate}</EFFECTIVEDATE>
+
+      <VOUCHERTYPENAME>Sales</VOUCHERTYPENAME>
       <PARTYLEDGERNAME>{customer}</PARTYLEDGERNAME>
+
+      <ISINVOICE>Yes</ISINVOICE>
+
       <ALLINVENTORYENTRIES.LIST>
-       <STOCKITEMNAME>{item}</STOCKITEMNAME>
-       <RATE>{amount}</RATE>
-       <AMOUNT>{amount}</AMOUNT>
+        <STOCKITEMNAME>{item}</STOCKITEMNAME>
+        <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>
+        <RATE>{amount}/Nos</RATE>
+        <AMOUNT>{amount}</AMOUNT>
+        <ACTUALQTY>1 Nos</ACTUALQTY>
+        <BILLEDQTY>1 Nos</BILLEDQTY>
       </ALLINVENTORYENTRIES.LIST>
+
+      <ALLLEDGERENTRIES.LIST>
+        <LEDGERNAME>{customer}</LEDGERNAME>
+        <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>
+        <AMOUNT>-{amount}</AMOUNT>
+      </ALLLEDGERENTRIES.LIST>
+
+      <ALLLEDGERENTRIES.LIST>
+        <LEDGERNAME>Sales</LEDGERNAME>
+        <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>
+        <AMOUNT>{amount}</AMOUNT>
+      </ALLLEDGERENTRIES.LIST>
+
      </VOUCHER>
+
     </TALLYMESSAGE>
    </REQUESTDATA>
+
   </IMPORTDATA>
  </BODY>
 </ENVELOPE>";
         }
-
     }
 }

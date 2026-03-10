@@ -12,7 +12,7 @@
     }
 
     .form-container {
-        width: 300px;
+        width:350px;
         background: white;
         padding: 30px;
         margin: 20px 40px;
@@ -100,7 +100,10 @@
 
 </div>
 
-@if (TempData["Result"] != null)
+@if (ViewBag.Result != null)
 {
-    <p class="result">@TempData["Result"]</p>
+    <div style="margin-top:20px;color:green;font-weight:bold;">
+        Response From Tally:
+        <pre>@ViewBag.Result</pre>
+    </div>
 }

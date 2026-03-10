@@ -74,7 +74,7 @@
 
         <div class="form-group">
             <label>Parent</label>
-            <input asp-for="Parent" placeholder="Enter Item Name" />
+            <input asp-for="Parent" placeholder="Enter Parent Type" />
         </div>
 
         <button type="submit">Create Ledger</button>
@@ -82,7 +82,3 @@
     </form>
 
 </div>
-@if (TempData["Result"] != null)
-{
-    <p class="result">@TempData["Result"]</p>
-}

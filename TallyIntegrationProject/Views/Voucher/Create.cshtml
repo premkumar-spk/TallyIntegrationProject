@@ -64,6 +64,12 @@
 <div class="form-container">
 
     <form method="post">
+
+        <div class="form-group">
+            <label>Voucher Date</label>
+            <input asp-for="Date" type="date" class="form-control" />
+        </div>
+
         <div class="form-group">
 
             <label asp-for="CustomerName">Customer Name</label>
@@ -88,4 +94,11 @@
 
 </div>
 
-<p class="result">@ViewBag.Result</p>
+
+@if (ViewBag.Result != null)
+{
+    <div style="margin-top:20px;color:green;font-weight:bold;">
+        Response From Tally:
+        <pre>@ViewBag.Result</pre>
+    </div>
+}

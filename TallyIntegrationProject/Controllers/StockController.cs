@@ -14,11 +14,12 @@ namespace TallyIntegrationProject.Controllers
             _service = service;
         }
 
-        public IActionResult Create()
+        public IActionResult Create(string ledger)
         {
+            ViewBag.Ledger = ledger;
             return View();
         }
-     
+
         [HttpPost]
         public async Task<IActionResult> Create(StockItemModel model)
         {
@@ -42,22 +43,30 @@ namespace TallyIntegrationProject.Controllers
             {
                 ModelState.AddModelError(nameof(model.Group), "Group is required.");
             }
-            if (!ModelState.IsValid)
+            try
             {
-                return View(model);
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+
+                XmlGenerator xml = new XmlGenerator();
+
+                // Safe to use null-forgiving operator because we've validated above.
+                var xmlData = xml.CreateStockXML(model.Name!, model.Unit!, model.Group);
+
+                var result = await _service.SendToTally(xmlData);
+                if (result.Contains("<CREATED>1") || result.Contains("<ALTERED>1"))
+                {
+                    return RedirectToAction("Create", "Voucher", new { StockItem = model.Name });
+                }
+                ViewBag.Result = result;
             }
-
-            XmlGenerator xml = new XmlGenerator();
-
-            // Safe to use null-forgiving operator because we've validated above.
-            var xmlData = xml.CreateStockXML(model.Name!, model.Unit!,model.Group);
-
-            var result = await _service.SendToTally(xmlData);
-
-            ViewBag.Result = result;
-
-            return View(model);
+            catch (Exception ex)
+            {
+                ViewBag.Result = ex.Message;
+            }
+                return View(model);
         }
-
-    }
+     }
 }

@@ -31,7 +31,6 @@ namespace TallyIntegrationProject.Controllers
                 return View(model);
             }
 
-            // Validate required string properties to avoid passing null to XmlGenerator.
             if (string.IsNullOrWhiteSpace(model.CustomerName))
             {
                 ModelState.AddModelError(nameof(model.CustomerName), "Customer name is required.");
@@ -42,6 +41,15 @@ namespace TallyIntegrationProject.Controllers
                 ModelState.AddModelError(nameof(model.ItemName), "Item name is required.");
             }
 
+            if (model.Amount <= 0)
+            {
+                ModelState.AddModelError(nameof(model.Amount), "Amount must be greater than zero.");
+            }
+
+            if (model.Date == default(DateTime))
+            {
+                ModelState.AddModelError(nameof(model.Date), "Voucher date is required.");
+            }
             if (!ModelState.IsValid)
             {
                 // Return the view with validation messages so the user can correct input.
@@ -51,8 +59,18 @@ namespace TallyIntegrationProject.Controllers
             // At this point CustomerName and ItemName are non-null and non-whitespace.
             var customer = model.CustomerName!;
             var item = model.ItemName!;
+            var amount = model.Amount;
+            var date = model.Date;
 
-            var xmlData = xml.CreateSalesVoucherXML(customer, item, model.Amount);
+            var tallyDate = date.ToString("yyyyMMdd");
+
+            var xmlData = xml.CreateSalesVoucherXML(
+                customer: customer,
+                item: item,
+                amount: amount,
+                date: date,
+                tallyDate: tallyDate
+            );
 
             var result = await _service.SendToTally(xmlData);
 

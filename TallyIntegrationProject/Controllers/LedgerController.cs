@@ -54,15 +54,18 @@ namespace TallyIntegrationProject.Controllers
                 //TempData["Result"] = result;
                 //return RedirectToAction("Create", "Stock");
 
-                if (result.Contains("Created") || result.Contains("success"))
+                if (result.Contains("<CREATED>1") || result.Contains("<ALTERED>1"))
                 {
                     return RedirectToAction("Create", "Stock", new { ledger = ledgerName });
                 }
+                ViewBag.Result = result;
             }
             catch (Exception ex)
             {
                 ViewBag.Result = ex.Message;
             }
+
+
             return View(model);
         }
     }
