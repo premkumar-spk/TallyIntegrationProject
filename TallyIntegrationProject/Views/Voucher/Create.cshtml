@@ -13,7 +13,7 @@
     }
 
     .form-container {
-        width: 300px;
+        width: 400px;
         background: white;
         padding: 30px;
         margin: 20px 40px;
@@ -63,30 +63,19 @@
 
 <div class="form-container">
 
-    <form method="post">
+    <form asp-action="CreateSalesVoucher" asp-controller="Voucher" method="post">
 
-        <div class="form-group">
-            <label>Voucher Date</label>
-            <input asp-for="Date" type="date" class="form-control" />
-        </div>
+        <label>Voucher Date</label>
+        <input asp-for="Date" type="text" placeholder="YYYY-MM-DD" />
 
-        <div class="form-group">
+        <label>Customer Name</label>
+        <input asp-for="CustomerName" />
 
-            <label asp-for="CustomerName">Customer Name</label>
+        <label>Item Name</label>
+        <input asp-for="ItemName" />
 
-            <input asp-for="CustomerName" placeholder="Enter Customer Name" />
-
-        </div>
-
-        <div class="form-group">
-            <label>Item Name</label>
-            <input asp-for="ItemName" placeholder="Enter Item Name" />
-        </div>
-
-        <div class="form-group">
-            <label>Amount</label>
-            <input asp-for="Amount" placeholder="Enter Unit" />
-        </div>
+        <label>Amount</label>
+        <input asp-for="Amount" />
 
         <button type="submit">Create Voucher</button>
 
@@ -94,11 +83,16 @@
 
 </div>
 
-
-@if (ViewBag.Result != null)
+@if (ViewBag.TallyResponse != null)
 {
-    <div style="margin-top:20px;color:green;font-weight:bold;">
-        Response From Tally:
-        <pre>@ViewBag.Result</pre>
+    <div style="margin-top:20px;padding:15px;background:#eef;border-radius:6px;">
+        <h4>Tally Response</h4>
+        <pre>@ViewBag.TallyResponse</pre>
+    </div>
+}
+@if (ViewBag.Message != null)
+{
+    <div style="margin-top:20px;padding:10px;background:#ffe0e0;border-radius:6px;">
+        <b>@ViewBag.Message</b>
     </div>
 }

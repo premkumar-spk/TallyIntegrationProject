@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Xml.Linq;
 using TallyIntegrationProject.Models;
 using TallyIntegrationProject.Services;
 
@@ -20,63 +21,71 @@ namespace TallyIntegrationProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(SalesVoucher model)
+        public async Task<IActionResult> CreateSalesVoucher(SalesVoucher model)
         {
             XmlGenerator xml = new XmlGenerator();
 
-            // Null-check the model itself.
             if (model == null)
             {
-                ModelState.AddModelError(string.Empty, "Invalid request.");
+                ModelState.AddModelError("", "Invalid request.");
                 return View(model);
             }
 
             if (string.IsNullOrWhiteSpace(model.CustomerName))
-            {
-                ModelState.AddModelError(nameof(model.CustomerName), "Customer name is required.");
-            }
+                ModelState.AddModelError(nameof(model.CustomerName), "Customer name required");
 
             if (string.IsNullOrWhiteSpace(model.ItemName))
-            {
-                ModelState.AddModelError(nameof(model.ItemName), "Item name is required.");
-            }
+                ModelState.AddModelError(nameof(model.ItemName), "Item name required");
 
             if (model.Amount <= 0)
-            {
-                ModelState.AddModelError(nameof(model.Amount), "Amount must be greater than zero.");
-            }
+                ModelState.AddModelError(nameof(model.Amount), "Amount must be greater than zero");
 
-            if (model.Date == default(DateTime))
-            {
-                ModelState.AddModelError(nameof(model.Date), "Voucher date is required.");
-            }
+            if (string.IsNullOrWhiteSpace(model.Date))
+                ModelState.AddModelError(nameof(model.Date), "Voucher date required");
+
             if (!ModelState.IsValid)
-            {
-                // Return the view with validation messages so the user can correct input.
                 return View(model);
-            }
 
-            // At this point CustomerName and ItemName are non-null and non-whitespace.
-            var customer = model.CustomerName!;
-            var item = model.ItemName!;
+            var customer = model.CustomerName;
+            var item = model.ItemName;
             var amount = model.Amount;
-            var date = model.Date;
 
-            var tallyDate = date.ToString("yyyyMMdd");
+            // convert date to tally format
+            var tallyDate = DateTime.ParseExact(model.Date, "yyyy-MM-dd", null).ToString("yyyyMMdd");
 
             var xmlData = xml.CreateSalesVoucherXML(
-                customer: customer,
-                item: item,
-                amount: amount,
-                date: date,
-                tallyDate: tallyDate
+                customer,
+                item,
+                amount,
+                tallyDate
             );
 
             var result = await _service.SendToTally(xmlData);
 
-            ViewBag.Result = result;
+            // Parse the Tally response
+            var doc = XDocument.Parse(result);
 
-            return View();
+            var created = doc.Descendants("CREATED").FirstOrDefault()?.Value;
+
+            // 👇 PLACE YOUR CODE HERE
+            var lineError = doc.Descendants("LINEERROR").FirstOrDefault()?.Value;
+
+            if (!string.IsNullOrEmpty(lineError))
+            {
+                ViewBag.Message = lineError;
+            }
+            else if (created == "1")
+            {
+                ViewBag.Message = "Voucher Created Successfully";
+            }
+            else
+            {
+                ViewBag.Message = "Voucher creation failed.";
+            }
+
+            ViewBag.TallyResponse = result;
+
+            return View("Create", model);
         }
 
     }
