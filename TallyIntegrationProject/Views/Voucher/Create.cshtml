@@ -1,5 +1,11 @@
-﻿@model TallyIntegrationProject.Models.SalesVoucher
-
+﻿
+@model TallyIntegrationProject.Models.SalesVoucher
+@if (ViewBag.Message != null)
+{
+    <div style="color:green;font-weight:bold">
+        @ViewBag.Message
+    </div>
+}
 <style>
     body {
         background-color: #f4f6f9;
@@ -13,7 +19,7 @@
     }
 
     .form-container {
-        width: 400px;
+        width: 350px;
         background: white;
         padding: 30px;
         margin: 20px 40px;
@@ -39,6 +45,7 @@
         font-size: 14px;
     }
 
+
     button {
         background-color: #2f3e4d;
         color: white;
@@ -59,23 +66,45 @@
     }
 </style>
 
-<h2 class="page-title">Create Sales Voucher</h2>
-
+<h2 class="page-title"> Create Sales Voucher </h2>
 <div class="form-container">
 
-    <form asp-action="CreateSalesVoucher" asp-controller="Voucher" method="post">
+    <form asp-action="CreateSalesVoucher" method="post">
 
-        <label>Voucher Date</label>
-        <input asp-for="Date" type="text" placeholder="YYYY-MM-DD" />
+        <div class="form-group">
+            <label>CompanyName</label>
+            <input asp-for="CompanyName" placeholder="Enter Company Name" />
+        </div>
 
-        <label>Customer Name</label>
-        <input asp-for="CustomerName" />
+        <div class="form-group">
+            <label>VoucherDate</label>
+            <input type="date" asp-for="VoucherDate" class="form-control" required />
+        </div>
 
-        <label>Item Name</label>
-        <input asp-for="ItemName" />
+        <div class="form-group">
+            <label>CustomerLedger </label>
+            <input asp-for="CustomerLedger" placeholder="Enter Customer Ledger Name " />
+        </div>
 
-        <label>Amount</label>
-        <input asp-for="Amount" />
+        <div class="form-group">
+            <label>ItemName</label>
+            <input asp-for="ItemName" placeholder="Enter Item Name" />
+        </div>
+
+        <div class="form-group">
+            <label>Quantity</label>
+            <input asp-for="Quantity" placeholder="Enter Quantity" />
+        </div>
+
+        <div class="form-group">
+            <label>Rate</label>
+            <input asp-for="Rate" placeholder="Enter Quantity" />
+        </div>
+
+        <div class="form-group">
+            <label>Amount</label>
+            <input asp-for="Amount" placeholder="Enter Quantity" />
+        </div>
 
         <button type="submit">Create Voucher</button>
 
@@ -85,14 +114,9 @@
 
 @if (ViewBag.TallyResponse != null)
 {
-    <div style="margin-top:20px;padding:15px;background:#eef;border-radius:6px;">
-        <h4>Tally Response</h4>
+    <h4>Tally Response</h4>
+    <div style="margin-top:20px;color:green;font-weight:bold;">
+        Response From Tally:
         <pre>@ViewBag.TallyResponse</pre>
-    </div>
-}
-@if (ViewBag.Message != null)
-{
-    <div style="margin-top:20px;padding:10px;background:#ffe0e0;border-radius:6px;">
-        <b>@ViewBag.Message</b>
     </div>
 }

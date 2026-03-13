@@ -13,11 +13,15 @@ namespace TallyIntegrationProject.Services
 
         public async Task<string> SendToTally(string xmlData)
         {
-            using var client = new HttpClient();
+            //using var client = new HttpClient();
 
-            var content = new StringContent(xmlData, Encoding.UTF8, "text/xml");
+            //var content = new StringContent(xmlData, Encoding.UTF8, "text/xml");
 
-            var response = await client.PostAsync("http://localhost:9000", content);
+            var content = new StringContent(xmlData, Encoding.UTF8, "application/xml");
+
+            var response = await _httpClient.PostAsync("http://localhost:9000", content);
+
+            //var response = await client.PostAsync("http://localhost:9000", content);
 
             var result = await response.Content.ReadAsStringAsync();
 
